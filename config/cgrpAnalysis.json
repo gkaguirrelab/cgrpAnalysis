@@ -1,0 +1,16 @@
+[
+	{
+		"flavor": "",
+		"hook": "",
+		"importance": "",
+		"localHookTemplate": "configuration/cgrpAnalysisLocalHookTemplate.m",
+                "printLocalHookOutput": "1",
+		"name": "cgrpAnalysis",
+		"pathPlacement": "append",
+		"subfolder": "code",
+		"toolboxRoot": "",
+		"type": "git",
+		"update": "",
+		"url": ""
+	}
+]
