@@ -39,18 +39,40 @@ postLightTime = timePoints(6:end)-timePoints(6);
 interpTime = timePoints(6):0.1:timePoints(end);
 
 % Define an exponential function of post-light time
-myExpFunc = @(p,x) exp(-x./p(1))+p(2) * (1/(1+p(2)));
+myExpFunc = @(p,x) (exp(-x./p(1))+p(2)) ./ (1+p(2));
+
+lb = [6, 0];
+
+params = [];
+options = optimset('fmincon');
+options.Display = 'off';
 
 figure
 for ll=1:nLevels
     myObj = @(tau) norm((meanVals(6:end,ll) - myExpFunc(tau,postLightTime))); % .* (1./semVals(6:end,ll)));
-    pVal = fmincon(myObj,[10,0.2]);
+    params(ll,:) = fmincon(myObj,[10,0.2],[],[],[],[],lb,[],[],options);
     subplot(5,1,ll)
-    plot(timePoints,meanVals(:,ll),'*');
+    plot(timePoints,meanVals(:,ll),'ok');    
     hold on
-    plot(interpTime,myExpFunc(pVal,interpTime-timePoints(6)),'-r');
-    ylim([0 1]);
-    pVal(1)
+    for tt=1:nPoints
+        plot([timePoints(tt) timePoints(tt)],[meanVals(tt,ll)-semVals(tt,ll), meanVals(tt,ll)+semVals(tt,ll)],'-','Color',[0.5 0.5 0.5],'LineWidth',1.5);
+    end
+    plot([0 30],[1 1],'-r','LineWidth',2);
+    plot(interpTime,myExpFunc(params(ll,:),interpTime-timePoints(6)),'-r','LineWidth',2);
+    ylim([0 1.25]);
 end
 
+weibullCDF = @(x,p) p(1) + p(2) - p(2)*exp( - (x./p(3)).^p(4) ) ;
+
+figure
+subplot(1,2,1)
+plot(log10(lightLevels),params(:,1),'-ok');
+% myObj = @(p) norm(params(:,1) - weibullCDF(log10(lightLevels),p) );
+% pVals = fmincon(myObj,[6 10 1 15]);
+% hiResX = log10(1:100);
+% hold on
+% plot(hiResX,weibullCDF(hiResX,pVals))
+
+subplot(1,2,2)
+plot(log10(lightLevels),params(:,2),'-ok');
 
