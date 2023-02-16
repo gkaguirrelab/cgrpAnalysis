@@ -2,7 +2,7 @@
 % CombiLED 8-channel light engine. This routine presumes that the
 % prizModulationFirmware is installed on the device.
 
-classdef MouseLightControl < handle
+classdef MouseLightcontrol < handle
 
     properties (Constant)
 
@@ -40,7 +40,7 @@ classdef MouseLightControl < handle
     methods
 
         % Constructor
-        function obj = MouseLightControl(varargin)
+        function obj = MouseLightcontrol(varargin)
 
             % input parser
             p = inputParser; p.KeepUnmatched = false;
