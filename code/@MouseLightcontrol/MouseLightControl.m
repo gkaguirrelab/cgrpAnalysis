@@ -10,7 +10,6 @@ classdef MouseLightcontrol < handle
         nDiscreteLevels = 51;
         baudrate = 57600;
         refreshRate = 10; % Hz
-        nGammaParams = 6;
     end
 
     % Private properties
@@ -32,8 +31,6 @@ classdef MouseLightcontrol < handle
         % Verbosity
         verbose = false;
 
-        % Properties of the gamma correction
-        gammaFitTol = 0.03;
 
     end
 
@@ -53,29 +50,12 @@ classdef MouseLightcontrol < handle
             % Open the serial port
             obj.serialOpen;
 
-            % Send the default gammaTable
-            gammaTableFileName = fullfile(fileparts(mfilename('fullpath')),'defaultGammaTable.mat');
-            load(gammaTableFileName,'gammaTable');
-            obj.setGamma(gammaTable);
-
         end
 
         % Required methds
         serialOpen(obj)
         serialClose(obj)
         setPrimaries(obj,settings)
-        startModulation(obj)
-        stopModulation(ob)
-        setFrequency(obj,frequency)
-        setContrast(obj,contrast)
-        setPhaseOffset(obj,phaseOffset)
-        setSettings(obj,modResult)
-        setBackground(obj,settingsBackground)
-        setAMIndex(obj,amplitudeIndex)
-        setAMValues(obj,amplitudeVals)
-        setCompoundModulation(obj,compoundHarmonics,compoundAmplitudes,compoundPhases)
-        setWaveformIndex(obj,waveformIndex)
-        setGamma(obj,gammaTable)
 
     end
 end
