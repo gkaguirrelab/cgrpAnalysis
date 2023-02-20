@@ -7,9 +7,10 @@ classdef MouseLightcontrol < handle
     properties (Constant)
 
         nPrimaries = 3;
-        nDiscreteLevels = 51;
+        nBoxes = 4;
+        nPanels = 2;
+        maxPrimarySetting = 4095;
         baudrate = 57600;
-        refreshRate = 10; % Hz
     end
 
     % Private properties
@@ -21,7 +22,6 @@ classdef MouseLightcontrol < handle
     properties (SetAccess=private)
 
         serialObj
-        deviceState
 
     end
 
@@ -31,6 +31,14 @@ classdef MouseLightcontrol < handle
         % Verbosity
         verbose = false;
 
+        % Settings structure
+        settings
+
+        % Duration on
+        durationOnMins = 30;
+
+        % Delay between turning on subsequent boxes
+        boxOnsetDelay = 0;
 
     end
 
@@ -50,12 +58,27 @@ classdef MouseLightcontrol < handle
             % Open the serial port
             obj.serialOpen;
 
+            % Define the default settings structure
+            for bb=1:obj.nBoxes
+                pp = 1;
+                obj.settings(bb,pp).frequency = 0;
+                obj.settings(bb,pp).primariesLow = ...
+                    [obj.maxPrimarySetting, obj.maxPrimarySetting, obj.maxPrimarySetting];
+                obj.settings(bb,pp).primariesHigh = ...
+                    [obj.maxPrimarySetting, obj.maxPrimarySetting, obj.maxPrimarySetting];
+
+                pp = 2;
+                obj.settings(bb,pp).frequency = 0;
+                obj.settings(bb,pp).primariesLow = [0, 0, 0];
+                obj.settings(bb,pp).primariesHigh = [0, 0, 0];
+            end
+
         end
 
         % Required methds
         serialOpen(obj)
         serialClose(obj)
-        setPrimaries(obj,settings)
+        sendSettings(obj)
 
     end
 end
