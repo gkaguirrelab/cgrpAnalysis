@@ -7,7 +7,11 @@ portList = serialportlist("available");
 arduinoPortIdx = find((contains(serialportlist("available"),'tty.usbserial')));
 arduinoPort = portList(arduinoPortIdx);
 if isempty(arduinoPort)
-    arduinoPortIdx = find((contains(serialportlist("available"),'tty.usbmodem2101')));
+    arduinoPortIdx = find((contains(serialportlist("available"),'tty.usbmodem1101')));
+    arduinoPort = portList(arduinoPortIdx);
+end
+if isempty(arduinoPort)
+    arduinoPortIdx = find((contains(serialportlist("available"),'tty.usbmodem1101')));
     arduinoPort = portList(arduinoPortIdx);
 end
 
@@ -21,9 +25,6 @@ obj.serialObj = serialport(arduinoPort,obj.baudrate);
 
 % Use CR and LF as a terminator
 configureTerminator(obj.serialObj,"CR/LF");
-
-% Need to read and thus clear the first line of command output
-readline(obj.serialObj);
 
 % Announce it
 if obj.verbose

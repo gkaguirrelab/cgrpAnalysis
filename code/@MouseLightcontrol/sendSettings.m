@@ -4,7 +4,8 @@ function sendSettings(obj)
 str = '<';
 
 % Add the overall duration and sequential box delay values
-str = [str num2str(obj.durationOnMins) ',' num2str(obj.boxOnsetDelay) ','];
+msecsInMin = 60*1000;
+str = [str num2str(obj.durationOnMins*msecsInMin) ',' num2str(obj.boxOnsetDelay) ','];
 
 % Now loop through boxes and panels
 for bb=1:obj.nBoxes
@@ -46,6 +47,7 @@ str = [str(1:end-1) '>'];
 writeline(obj.serialObj,str);
 
 if obj.verbose
+    fprintf([str '\n']);
     fprintf('Settings sent\n');
 end
 

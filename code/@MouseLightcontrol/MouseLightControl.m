@@ -10,7 +10,7 @@ classdef MouseLightcontrol < handle
         nBoxes = 4;
         nPanels = 2;
         maxPrimarySetting = 4095;
-        baudrate = 57600;
+        baudrate = 115200;
     end
 
     % Private properties
@@ -62,10 +62,8 @@ classdef MouseLightcontrol < handle
             for bb=1:obj.nBoxes
                 pp = 1;
                 obj.settings(bb,pp).frequency = 0;
-                obj.settings(bb,pp).primariesLow = ...
-                    [obj.maxPrimarySetting, obj.maxPrimarySetting, obj.maxPrimarySetting];
-                obj.settings(bb,pp).primariesHigh = ...
-                    [obj.maxPrimarySetting, obj.maxPrimarySetting, obj.maxPrimarySetting];
+                obj.settings(bb,pp).primariesLow = [1.0, 1.0, 1.0];
+                obj.settings(bb,pp).primariesHigh = [1.0, 1.0, 1.0];
 
                 pp = 2;
                 obj.settings(bb,pp).frequency = 0;
