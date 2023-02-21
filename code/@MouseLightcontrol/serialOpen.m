@@ -26,6 +26,15 @@ obj.serialObj = serialport(arduinoPort,obj.baudrate);
 % Use CR and LF as a terminator
 configureTerminator(obj.serialObj,"CR/LF");
 
+% Perform handshake
+msg=readline(obj.serialObj);
+
+% Check that the message is the letter "A"
+assert(strcmp(char(msg),'A'));
+
+% Send the letter "H
+writeline(obj.serialObj,'H');
+
 % Announce it
 if obj.verbose
     fprintf('Serial port open\n');
