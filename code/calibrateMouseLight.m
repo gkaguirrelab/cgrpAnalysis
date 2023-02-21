@@ -1,4 +1,4 @@
-% SACC_calibrateMonitor
+% calibrateMouseLight
 %
 % Executive script for object-oriented-based monitor calibration.
 
@@ -17,31 +17,24 @@
 %                      and changed the name as @SACCPsychImagingCalibrator.
 %                      This is for using our SACC functions (cf.
 %                      measurement) in all calibrations.
-%    02/05/2023  gka   Modified for the Prizmatix CombiLED
+%    02/05/2023  gka   Modified for the Prizmatix MouseLight
+%    02/21/2023  gka&eak Modified for the rodent light panels
 
-function calibrateCombiLED
+function calibrateMouseLight
 
 % Set the save location for calibration files
-calLocalData = fullfile(tbLocateProject('prizmatixDesign'),'cal');
+calLocalData = fullfile(tbLocateProject('cgrpAnalysis'),'cal');
 setpref('BrainardLabToolbox','CalDataFolder',calLocalData);
 
-% Ask the user about the measurement conditions
-fprintf('Information regarding the device configuration:')
-cableType = GetWithDefault('Fiber optic cable type','shortLLG');
-eyePieceType = GetWithDefault('Eye piece type','classic');
-ndfValue = GetWithDefault('NDF','0');
-
-% Replace any decimal points in the ndfValue with "x"
-ndfValue = strrep(ndfValue,'.','x');
-
-% Create a default calibration file name
-defaultName = ['CombiLED_' cableType '_' eyePieceType '_ND' ndfValue ];
-
 % Ask the user to provide a name for the calibration file
-calFileName = GetWithDefault('Name for the cal file',defaultName);
+calFileName = GetWithDefault('Name for the cal file','fullPanel');
+
+% Ask the user to pick a box and a panel
+boxIdx = str2double(GetWithDefault('Which box? [1-4]','4'));
+panelIdx = str2double(GetWithDefault('Which panel? [1-2]','1'));
 
 % Generate calibration options and settings
-[displaySettings, calibratorOptions] = generateConfigurationForCombiLED(calFileName);
+[displaySettings, calibratorOptions] = generateConfigurationForMouseLight(calFileName,boxIdx,panelIdx);
 
 % Open the spectroradiometer
 OpenSpectroradiometer('measurementOption',false);
@@ -69,21 +62,21 @@ end
 
 %% LOCAL FUNCTIONS
 
-function [displaySettings, calibratorOptions] = generateConfigurationForCombiLED(calFileName)
+function [displaySettings, calibratorOptions] = generateConfigurationForMouseLight(calFileName,boxIdx,panelIdx)
 
 % Specify the @Calibrator's initialization params. Users should tailor
 % these according to their hardware specs. These can be set once only, at
 % the time the @Calibrator object is instantiated.
-displayPrimariesNum = 8;
+displayPrimariesNum = 3;
 displaySettings = { ...
     'screenToCalibrate',        2, ...                          % which display to calibrate. main screen = 1, second display = 2
     'desiredScreenSizePixel',   [1 1], ...                      % pixels along the width and height of the display to be calibrated
     'desiredRefreshRate',       120, ...                        % refresh rate in Hz
     'displayPrimariesNum',      displayPrimariesNum, ...        % for regular displays this is always 3 (RGB)
     'displayDeviceType',        'monitor', ...                  % this should always be set to 'monitor' for now
-    'displayDeviceName',        'CombiLED', ...                 % a name for the display been calibrated
+    'displayDeviceName',        'MouseLight', ...                 % a name for the display been calibrated
     'calibrationFile',          calFileName, ...                % name of calibration file to be generated
-    'comment',                  'The CombiLED light engine' ... % some comment, could be anything
+    'comment',                  'The 3 channel MouseLight light' ... % some comment, could be anything
     };
 
 % Specify the @Calibrator's optional params using a CalibratorOptions object
@@ -91,7 +84,7 @@ displaySettings = { ...
 % Users should tailor these according to their experimental needs.
 calibratorOptions = CalibratorOptions( ...
     'verbosity',                        0, ...
-    'whoIsDoingTheCalibration',         'CombiLED user', ...
+    'whoIsDoingTheCalibration',         'MouseLight user', ...
     'emailAddressForDoneNotification',  '', ...
     'blankOtherScreen',                 0, ...                          % whether to blank other displays attached to the host computer (1=yes, 0 = no), ...
     'whichBlankScreen',                 1, ...                          % screen number of the display to be blanked  (main screen = 1, second display = 2)
@@ -99,7 +92,7 @@ calibratorOptions = CalibratorOptions( ...
     'bgColor',                          zeros(1,displayPrimariesNum), ...                 % color of the background
     'fgColor',                          zeros(1,displayPrimariesNum), ...                 % color of the foreground
     'meterDistance',                    0.1, ...                        % distance between radiometer and screen in meters
-    'leaveRoomTime',                    1, ...                          % seconds allowed to leave room
+    'leaveRoomTime',                    60, ...                          % seconds allowed to leave room
     'nAverage',                         3, ...                          % number of repeated measurements for averaging
     'nMeas',                            15, ...                         % samples along gamma curve
     'nDevices',                         displayPrimariesNum, ...        % number of primaries
@@ -128,7 +121,7 @@ calibratorInitParams{numel(calibratorInitParams)+1} ='executiveScriptName';
 calibratorInitParams{numel(calibratorInitParams)+1} = execScriptFileName;
 
 % instantiate the calibrator object
-calibratorOBJ = CombiLEDcalibrator(calibratorInitParams);
+calibratorOBJ = MouseLightcalibrator(calibratorInitParams,boxIdx,panelIdx);
 
 end
 

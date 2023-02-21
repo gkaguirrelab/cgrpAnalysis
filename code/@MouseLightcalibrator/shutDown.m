@@ -9,7 +9,7 @@ end
 displayObj = obj.displayObj;
 
 % Turn off the primaries
-displayObj.setPrimaries([0 0 0 0 0 0 0 0]);
+displayObj.setPrimaries([0 0 0]);
 
 % Close the serial connection
 displayObj.serialClose;

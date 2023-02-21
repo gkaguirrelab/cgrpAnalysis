@@ -1,19 +1,23 @@
-% Subclass of @Calibrator to work with the CombiLED
+% Subclass of @Calibrator to work with the MouseLight
 %
 % 3/27/2014  npc   Wrote it.
-% 2/02/2023  gka   Modified for the combiLED
+% 2/02/2023  gka   Modified for the MouseLight
+% 2/21/2023  gka & eak Modified for the MouseLight
 %
 
-classdef CombiLEDcalibrator < Calibrator
-    % Public properties (specific to the @CombiLEDCalibrator class)
+classdef MouseLightcalibrator < Calibrator
+    % Public properties (specific to the @MouseLightCalibrator class)
     properties
+
+        boxIdx
+        panelIdx
 
     end
 
     % --- PRIVATE PROPERTIES ----------------------------------------------
     properties (Access = private)
 
-        % Holds the object for communication with the CombiLED
+        % Holds the object for communication with the MouseLight
         displayObj
 
     end
@@ -22,12 +26,17 @@ classdef CombiLEDcalibrator < Calibrator
     % Public methods
     methods
         % Constructor
-        function obj = CombiLEDcalibrator(initParams)
+        function obj = MouseLightcalibrator(initParams,boxIdx,panelIdx)
 
             % Call the super-class constructor.
             obj = obj@Calibrator(initParams);
 
-            obj.graphicsEngine = 'CombiLED';
+            % Note the graphics engine
+            obj.graphicsEngine = 'MouseLight';
+
+            % Store the box and pabel
+            obj.boxIdx = boxIdx;
+            obj.panelIdx = panelIdx;
 
             % Verify validity of screen params values
             obj.verifyScreenParamValues();
