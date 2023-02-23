@@ -60,6 +60,12 @@ for ll=1:nLevels
     plot([0 30],[1 1],'-r','LineWidth',2);
     plot(interpTime,myExpFunc(params(ll,:),interpTime-timePoints(6)),'-r','LineWidth',2);
     ylim([0 1.25]);
+    if ll==3
+        ylabel('Change in proportion time in light zone')
+    end
+    if ll==nLevels
+        xlabel('time [minutes]')
+    end
 end
 
 weibullCDF = @(x,p) p(1) + p(2) - p(2)*exp( - (x./p(3)).^p(4) ) ;
@@ -67,6 +73,8 @@ weibullCDF = @(x,p) p(1) + p(2) - p(2)*exp( - (x./p(3)).^p(4) ) ;
 figure
 subplot(1,2,1)
 plot(log10(lightLevels),params(:,1),'-ok');
+ylabel('tau param exp decay');
+xlabel('log light level');
 % myObj = @(p) norm(params(:,1) - weibullCDF(log10(lightLevels),p) );
 % pVals = fmincon(myObj,[6 10 1 15]);
 % hiResX = log10(1:100);
@@ -75,4 +83,6 @@ plot(log10(lightLevels),params(:,1),'-ok');
 
 subplot(1,2,2)
 plot(log10(lightLevels),params(:,2),'-ok');
+ylabel('asymptote of light avoidance');
+xlabel('log light level');
 
