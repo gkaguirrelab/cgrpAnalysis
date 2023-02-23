@@ -26,6 +26,9 @@ function calibrateMouseLight
 calLocalData = fullfile(tbLocateProject('cgrpAnalysis'),'cal');
 setpref('BrainardLabToolbox','CalDataFolder',calLocalData);
 
+% Alert regarding the order of device connection
+fprintf('Ensure that the MouseLight is not currently connected to the computer\n');
+
 % Ask the user to provide a name for the calibration file
 calFileName = GetWithDefault('Name for the cal file','fullPanel');
 
@@ -34,7 +37,7 @@ boxIdx = str2double(GetWithDefault('Which box? [1-4]','4'));
 panelIdx = str2double(GetWithDefault('Which panel? [1-2]','1'));
 
 % Generate calibration options and settings
-[displaySettings, calibratorOptions] = generateConfigurationForMouseLight(calFileName,boxIdx,panelIdx);
+[displaySettings, calibratorOptions] = generateConfigurationForMouseLight(calFileName);
 
 % Open the spectroradiometer
 OpenSpectroradiometer('measurementOption',false);
@@ -43,10 +46,14 @@ OpenSpectroradiometer('measurementOption',false);
 radiometerOBJ = OLOpenSpectroRadiometerObj('PR-670');
 
 % Generate the calibrator object
-calibratorOBJ = generateCalibratorObject(displaySettings, radiometerOBJ, mfilename);
+calibratorOBJ = generateCalibratorObject(displaySettings, radiometerOBJ, mfilename,boxIdx,panelIdx);
 
 % Set the calibrator options
 calibratorOBJ.options = calibratorOptions;
+
+% Alert the user to connect the MouseLight
+fprintf('Power on and connect the MouseLight; return when ready\n')
+pause;
 
 % Calibrate
 calibratorOBJ.calibrate();
@@ -62,7 +69,7 @@ end
 
 %% LOCAL FUNCTIONS
 
-function [displaySettings, calibratorOptions] = generateConfigurationForMouseLight(calFileName,boxIdx,panelIdx)
+function [displaySettings, calibratorOptions] = generateConfigurationForMouseLight(calFileName)
 
 % Specify the @Calibrator's initialization params. Users should tailor
 % these according to their hardware specs. These can be set once only, at
@@ -85,7 +92,7 @@ displaySettings = { ...
 calibratorOptions = CalibratorOptions( ...
     'verbosity',                        0, ...
     'whoIsDoingTheCalibration',         'MouseLight user', ...
-    'emailAddressForDoneNotification',  '', ...
+    'emailAddressForDoneNotification',  'aguirreg@upenn.edu', ...
     'blankOtherScreen',                 0, ...                          % whether to blank other displays attached to the host computer (1=yes, 0 = no), ...
     'whichBlankScreen',                 1, ...                          % screen number of the display to be blanked  (main screen = 1, second display = 2)
     'blankSettings',                    zeros(1,displayPrimariesNum), ...                 % color of the whichBlankScreen
@@ -94,7 +101,7 @@ calibratorOptions = CalibratorOptions( ...
     'meterDistance',                    0.1, ...                        % distance between radiometer and screen in meters
     'leaveRoomTime',                    60, ...                          % seconds allowed to leave room
     'nAverage',                         3, ...                          % number of repeated measurements for averaging
-    'nMeas',                            15, ...                         % samples along gamma curve
+    'nMeas',                            10, ...                         % samples along gamma curve
     'nDevices',                         displayPrimariesNum, ...        % number of primaries
     'boxSize',                          1, ...                          % size of calibration stimulus in pixels
     'boxOffsetX',                       0, ...                          % x-offset from center of screen (neg: leftwards, pos:rightwards)
@@ -107,7 +114,7 @@ end
 
 
 % Function to generate the calibrator object.
-function calibratorOBJ = generateCalibratorObject(displaySettings, radiometerOBJ, execScriptFileName)
+function calibratorOBJ = generateCalibratorObject(displaySettings, radiometerOBJ, execScriptFileName,boxIdx,panelIdx)
 
 % set init params
 calibratorInitParams = displaySettings;

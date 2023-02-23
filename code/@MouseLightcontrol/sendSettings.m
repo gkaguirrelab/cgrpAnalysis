@@ -43,6 +43,9 @@ end
 % Remove the trailing comma and add a closing chevron
 str = [str(1:end-1) '>'];
 
+% Set the device into a setting receipt mode
+writeline(obj.serialObj,'S');
+
 % Send the command
 writeline(obj.serialObj,str);
 

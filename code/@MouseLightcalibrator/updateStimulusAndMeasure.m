@@ -12,7 +12,7 @@ displayObj = obj.displayObj;
 % Set the settings for the box and panel we are calibrating
 displayObj.settings(obj.boxIdx,obj.panelIdx).frequency = 0;
 displayObj.settings(obj.boxIdx,obj.panelIdx).primariesLow = targetSettings;
-displayObj.settings(bb,pp).primariesHigh = targetSettings;
+displayObj.settings(obj.boxIdx,obj.panelIdx).primariesHigh = targetSettings;
 displayObj.sendSettings();
 
 % Measure

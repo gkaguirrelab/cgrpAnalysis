@@ -7,7 +7,7 @@ portList = serialportlist("available");
 arduinoPortIdx = find((contains(serialportlist("available"),'tty.usbserial')));
 arduinoPort = portList(arduinoPortIdx);
 if isempty(arduinoPort)
-    arduinoPortIdx = find((contains(serialportlist("available"),'tty.usbmodem')));
+    arduinoPortIdx = find((contains(serialportlist("available"),'tty.usbmodem101')));
     arduinoPort = portList(arduinoPortIdx);
 end
 if isempty(arduinoPort)

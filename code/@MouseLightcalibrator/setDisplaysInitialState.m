@@ -5,7 +5,6 @@ function setDisplaysInitialState(obj, userPrompt)
     
     % Instantiate the MouseLight object and setup the serial connection
     displayObj = MouseLightcontrol();
-    displayObj.serialOpen;
 
     % Give it 5 seconds for the firmware to boot
     pause(5);
