@@ -32,8 +32,13 @@ function modResult = designModulation(whichDirection,photoreceptors,varargin)
 % Examples:
 %{
     photoreceptors = photoreceptorDictionary();
-    whichDirection = 'humanizedMel';
     whichDirection = 'humanizedCone';
+    modResult = designModulation(whichDirection,photoreceptors);
+    plotModResult(modResult);
+%}
+%{
+    photoreceptors = photoreceptorDictionary();
+    whichDirection = 'humanizedMel';
     modResult = designModulation(whichDirection,photoreceptors);
     plotModResult(modResult);
 %}
