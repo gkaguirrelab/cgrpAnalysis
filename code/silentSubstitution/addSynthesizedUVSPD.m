@@ -31,6 +31,10 @@ ambientSpd = cal.processedData.P_ambient;
 nPrimaries = size(B_primary,2);
 wavelengthsNm = SToWls(S);
 
+% Hard code the identity of the two relevant primaries
+uvPrimaryIdx = 3;
+bluePrimaryIdx = 2;
+
 % Define an S
 newS = [300 2 241];
 newWavelengthsNm = SToWls(newS);
@@ -67,12 +71,37 @@ spdRaw = [334.56310679611653, 0.0066006600660066805
 453.20388349514565, 0.0033003300330032292
 ];
 
+% Fit a spline to the raw spd data
 spdPortion = spline(spdRaw(:,1),spdRaw(:,2),340:2:400);
+
+% Place the splined portion into a zero array
 spd = zeros(size(newWavelengthsNm));
 [~,idx1] = min(abs(newWavelengthsNm-340));
 [~,idx2] = min(abs(newWavelengthsNm-400));
 spd(idx1:idx2) = spdPortion;
+
+% Scale by the max value
 B_365LED = spd / max(spd);
+
+% Scale the 365 LED by the scaleFactor for power
+B_365LED = B_365LED * max(B_primary(:,bluePrimaryIdx)) * scaleFactor;
+
+% Create a transmittance spectrum for the SUVT acrylic. The light from the
+% UV LED passes through this.
+suvtFileName = fullfile(tbLocateProject('cgrpAnalysis'),'data','SUVT_Acryilic_transmittance.csv');
+suvtTable = readtable(suvtFileName);
+
+minWl = floor(min(suvtTable{:,1})/2)*2;
+maxWl = ceil(max(suvtTable{:,1})/2)*2;
+
+transmitPortion = spline(suvtTable{:,1},suvtTable{:,2},minWl:2:maxWl);
+transmittance = zeros(size(newWavelengthsNm))+max(transmitPortion);
+idx1 = find((minWl:2:maxWl)==newWavelengthsNm(1));
+[~,idx2] = min(abs(newWavelengthsNm-maxWl));
+transmittance(1:idx2) = transmitPortion(idx1:end);
+
+% Apply the diffusion filter
+B_365LED = B_365LED.*(transmittance/100);
 
 % Now expand the original B_primary matrix to the newS range
 newB_primary = zeros(length(newWavelengthsNm),nPrimaries);
@@ -84,15 +113,11 @@ newAmbientSPD = zeros(length(newWavelengthsNm),1) + mean(ambientSpd(1:50));
 [~,idx1] = min(abs(newWavelengthsNm-min(wavelengthsNm)));
 [~,idx2] = min(abs(newWavelengthsNm-max(wavelengthsNm)));
 
+% Copy over the old B_primary into the new B_primary
 newB_primary(idx1:idx2,:) = B_primary;
 newAmbientSPD(idx1:idx2) = ambientSpd;
 
 % Now sub in the synthesized UV
-uvPrimaryIdx = 3;
-bluePrimaryIdx = 2;
-
-B_365LED = B_365LED * max(newB_primary(:,bluePrimaryIdx)) * scaleFactor;
-
 newB_primary(:,uvPrimaryIdx) = B_365LED;
 
 end

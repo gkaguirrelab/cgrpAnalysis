@@ -31,7 +31,7 @@ function T_energyNormalized = returnRodentSpectralSensitivity(photoreceptorStruc
 %   adjIndDiffParams
 %
 
-% Load the Lucas data
+% Load the Lucas rodent spectral sensitivity functions
 rodentFileName = fullfile(tbLocateProject('cgrpAnalysis'),'data','rodent_action_spectra.csv');
 rodentTable = readtable(rodentFileName);
 
@@ -54,16 +54,25 @@ switch photoreceptorStruct.whichReceptor
         wavelenghtsIn = rodentTable.Wavelength;    
         T_energyNormalized = interp1(wavelenghtsIn,T_energyNormalized,SToWls(S));        
     case 'L'
-        % Hard code some human pre-receptoral filtering properties
-        idx = 1;
-        fieldSizeDegrees = 10;
-        observerAgeInYears = 20;
-        pupilDiameterMm = 2;
-        % Call out to ComputeCIEConeFundamentals
-        [~,~,T_quantalIsomerizations] = ...
-            ComputeCIEConeFundamentals(S,fieldSizeDegrees,observerAgeInYears,pupilDiameterMm,[],[],[],[],[],[],[]);
+        S = WlsToS((380:2:780)');
+        photoreceptors.species = 'Mouse';
+        photoreceptors.types = {'humanLcone'};
+        photoreceptors.nomogram.S = S;
+        photoreceptors.axialDensity.source = 'Value provided directly';
+        photoreceptors.axialDensity.value = 0.1; % Arbitrarily set
+        photoreceptors.nomogram.source = 'Govardovskii';
+        photoreceptors.nomogram.lambdaMax = 556; % Corresponds to Lala180
+        photoreceptors.quantalEfficiency.source = 'Generic';
+        photoreceptors.fieldSizeDegrees = 30;
+        photoreceptors.ageInYears = 20;
+        photoreceptors.pupilDiameter.value = 3;
+        photoreceptors.macularPigmentDensity.source = 'None';
+
+        % Need to hack in the lens transmittance here
+        photoreceptors.lensDensity.source = 'None';
+        photoreceptors = FillInPhotoreceptors(photoreceptors);
         % Convert to energy fundamentals
-        T_energy = EnergyToQuanta(S,T_quantalIsomerizations(idx,:)')';
+        T_energy = EnergyToQuanta(S,photoreceptors.quantalFundamentals')';
         % And normalize the energy fundamentals
         T_energyNormalized = bsxfun(@rdivide,T_energy,max(T_energy, [], 2));
 end
