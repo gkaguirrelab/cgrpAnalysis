@@ -47,6 +47,10 @@ plot(c,settingsLow,'*r');
 plot(c,settingsBackground,'-*','Color',[0.5 0.5 0.5]);
 set(gca,'TickLabelInterpreter','none');
 title('Primaries');
+if isfield(modResult.meta,'primaryLabels')
+    a = gca;
+    a.XTickLabel = modResult.meta.primaryLabels;
+end
 ylim([0 1]);
 xlabel('Primary');
 ylabel('Setting');

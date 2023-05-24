@@ -32,13 +32,19 @@ function modResult = designModulation(whichDirection,photoreceptors,varargin)
 % Examples:
 %{
     photoreceptors = photoreceptorDictionary();
-    whichDirection = 'humanizedCone';
+    whichDirection = 'SplusHumanL';    
     modResult = designModulation(whichDirection,photoreceptors);
     plotModResult(modResult);
 %}
 %{
     photoreceptors = photoreceptorDictionary();
-    whichDirection = 'humanizedMel';
+    whichDirection = 'melSilentHumanL';
+    modResult = designModulation(whichDirection,photoreceptors);
+    plotModResult(modResult);
+%}
+%{
+    photoreceptors = photoreceptorDictionary();
+    whichDirection = 'SsilentHumanL';
     modResult = designModulation(whichDirection,photoreceptors);
     plotModResult(modResult);
 %}
@@ -49,6 +55,7 @@ p = inputParser;
 p.addRequired('whichDirection',@ischar);
 p.addRequired('photoreceptors',@isstruct);
 p.addParameter('calLocalData',fullfile(tbLocateProject('cgrpAnalysis'),'cal','fullPanel.mat'),@ischar);
+p.addParameter('primaryLabels',{'red','blue','uv'},@iscell);
 p.addParameter('primaryHeadRoom',0.00,@isscalar)
 p.addParameter('verbose',false,@islogical)
 p.parse(whichDirection,photoreceptors,varargin{:});
@@ -165,6 +172,7 @@ modResult.meta.xyBound = xyBound;
 modResult.meta.B_primary = B_primary;
 modResult.meta.T_receptors = T_receptors;
 modResult.meta.photoreceptors = photoreceptors;
+modResult.meta.primaryLabels = p.Results.primaryLabels;
 modResult.meta.whichReceptorsToTarget = whichReceptorsToTarget;
 modResult.meta.whichReceptorsToIgnore = whichReceptorsToIgnore;
 modResult.meta.desiredContrast = desiredContrast;
