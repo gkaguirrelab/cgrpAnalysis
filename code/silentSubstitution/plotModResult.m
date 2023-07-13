@@ -24,10 +24,25 @@ nPhotoClasses = length(photoreceptorClassNames);
 % Create a figure with an appropriate title
 figName = sprintf([whichDirection ': contrast = %2.2f'],contrastReceptorsBipolar(whichReceptorsToTarget(1)));
 figHandle = figure('Visible',visible,'Name',figName);
-figuresize(800, 200,'pt');
+figuresize(1000, 200,'pt');
+
+% Receptor spectra
+subplot(1,5,1)
+nReceptors = length(modResult.meta.photoreceptors);
+for ii = 1:nReceptors
+    vec = modResult.meta.T_receptors(ii,:);
+    plotColor = modResult.meta.photoreceptors(ii).plotColor;
+    plot(wavelengthsNm,vec,'-','Color',plotColor,'LineWidth',0.5);
+hold on
+end
+title('Receptors spectra');
+xlim([300 800]);
+xlabel('Wavelength');
+ylabel('Relative sensitivity');
+axis square
 
 % Modulation spectra
-subplot(1,4,1)
+subplot(1,5,2)
 hold on
 plot(wavelengthsNm,positiveModulationSPD,'k','LineWidth',2);
 plot(wavelengthsNm,negativeModulationSPD,'r','LineWidth',2);
@@ -39,7 +54,7 @@ ylabel('Power');
 axis square
 
 % Primaries
-subplot(1,4,2)
+subplot(1,5,3)
 c = 0:nPrimaries-1;
 hold on
 plot(c,settingsHigh,'*k');
@@ -57,7 +72,7 @@ ylabel('Setting');
 axis square
 
 % Contrasts
-subplot(1,4,3)
+subplot(1,5,4)
 c = 1:nPhotoClasses;
 barVec = zeros(1,nPhotoClasses);
 thisBar = barVec;
@@ -81,7 +96,7 @@ ylabel('Contrast');
 axis square
 
 % Chromaticity
-subplot(1,4,4)
+subplot(1,5,5)
 
 % Start with the Matlab chromaticity diagram
 plotChromaticity;
