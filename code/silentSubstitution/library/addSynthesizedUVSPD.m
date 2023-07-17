@@ -88,7 +88,7 @@ B_365LED = B_365LED * max(B_primary(:,bluePrimaryIdx)) * scaleFactor;
 
 % Create a transmittance spectrum for the SUVT acrylic. The light from the
 % UV LED passes through this.
-suvtFileName = fullfile(tbLocateProject('cgrpAnalysis'),'data','SUVT_Acryilic_transmittance.csv');
+suvtFileName = fullfile(tbLocateProjectSilent('cgrpAnalysis'),'data','SUVT_Acryilic_transmittance.csv');
 suvtTable = readtable(suvtFileName);
 
 minWl = floor(min(suvtTable{:,1})/2)*2;

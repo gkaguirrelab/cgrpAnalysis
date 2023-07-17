@@ -32,7 +32,7 @@ function T_energyNormalized = returnRodentSpectralSensitivity(photoreceptorStruc
 %
 
 % Load the Lucas rodent spectral sensitivity functions
-rodentFileName = fullfile(tbLocateProject('cgrpAnalysis'),'data','rodent_action_spectra.csv');
+rodentFileName = fullfile(tbLocateProjectSilent('cgrpAnalysis'),'data','rodent_action_spectra.csv');
 rodentTable = readtable(rodentFileName);
 
 % Obtain the quantal isomerizations for the specified receptor class
@@ -57,7 +57,7 @@ switch photoreceptorStruct.whichReceptor
         wls = SToWls(S);
 
         % Obtain the rodent lens transmittance
-        lensFileName = fullfile(tbLocateProject('cgrpAnalysis'),'data','rodent_lens_transmittance.csv');
+        lensFileName = fullfile(tbLocateProjectSilent('cgrpAnalysis'),'data','rodent_lens_transmittance.csv');
         lensTable = readtable(lensFileName);
         minWl = floor(min(lensTable{:,1})/2)*2;
         maxWl = ceil(max(lensTable{:,1})/2)*2;

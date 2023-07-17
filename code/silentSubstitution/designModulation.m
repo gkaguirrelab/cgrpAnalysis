@@ -54,7 +54,7 @@ function modResult = designModulation(whichDirection,photoreceptors,varargin)
 p = inputParser;
 p.addRequired('whichDirection',@ischar);
 p.addRequired('photoreceptors',@isstruct);
-p.addParameter('calLocalData',fullfile(tbLocateProject('cgrpAnalysis'),'cal','fullPanel.mat'),@ischar);
+p.addParameter('calLocalData',fullfile(tbLocateProjectSilent('cgrpAnalysis'),'cal','fullPanel.mat'),@ischar);
 p.addParameter('primaryLabels',{'red','blue','uv'},@iscell);
 p.addParameter('primaryHeadRoom',0.00,@isscalar)
 p.addParameter('verbose',false,@islogical)
