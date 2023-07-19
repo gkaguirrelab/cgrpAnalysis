@@ -43,8 +43,8 @@ pause(nSecs);
 for bb = 1:displayObj.nBoxes
     for pp = 1:displayObj.nPanels
         displayObj.settings(bb,pp).frequency = 0;
-        displayObj.settings(bb,pp).primariesLow = squeeze(settings(bb,pp,:));
-        displayObj.settings(bb,pp).primariesHigh = squeeze(settings(bb,pp,:));
+       displayObj.settings(bb,pp).primariesLow = squeeze(settings(bb,pp,:));
+    displayObj.settings(bb,pp).primariesHigh = squeeze(settings(bb,pp,:));
     end
 end
 displayObj.sendSettings();
