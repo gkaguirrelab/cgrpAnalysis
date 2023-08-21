@@ -12,8 +12,8 @@ coneModResult = designModulation(whichDirection,photoreceptors);
 whichDirection = 'melSilentHumanL';
 melModResult = designModulation(whichDirection,photoreceptors);
 
-contrastLevels = [0.25, 0.5, 1];
-nLevels = 3;
+contrastLevels = [0.25, 0.5, 0.75, 1];
+nLevels = 4;
 
 fprintf('Settings [red, blue, UV]:\n')
 for ii = 1:nLevels
