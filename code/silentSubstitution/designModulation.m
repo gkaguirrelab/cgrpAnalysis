@@ -54,7 +54,7 @@ function modResult = designModulation(whichDirection,photoreceptors,varargin)
 p = inputParser;
 p.addRequired('whichDirection',@ischar);
 p.addRequired('photoreceptors',@isstruct);
-p.addParameter('calLocalData',fullfile(tbLocateProjectSilent('cgrpAnalysis'),'cal','fullPanel.mat'),@ischar);
+p.addParameter('calLocalData',fullfile(tbLocateProjectSilent('cgrpAnalysis'),'cal','fullPanelNoDiffuser.mat'),@ischar);
 p.addParameter('primaryLabels',{'red','blue','uv'},@iscell);
 p.addParameter('primaryHeadRoom',0.00,@isscalar)
 p.addParameter('verbose',false,@islogical)
@@ -70,14 +70,12 @@ cal = cals{end};
 
 % Modify the cal file to expand the S range and add in the synthesized 365
 % nm LED SDP
-[S,B_primary,ambientSpd] = addSynthesizedUVSPD(cal);
+includeDiffuserFlag = false;
+[S,B_primary,ambientSpd] = addSynthesizedUVSPD(cal,includeDiffuserFlag);
 
 % Pull out some information from the calibration
 nPrimaries = size(B_primary,2);
 wavelengthsNm = SToWls(S);
-
-% Here we hack in the synthesized B_primary for the UV light. For details
-% see returnSynthesizedUVSPD.m
 
 % Create the spectral sensitivities in the photoreceptor structure for our
 % given set of wavelengths (S). Also assemble the T_receptors matrix.

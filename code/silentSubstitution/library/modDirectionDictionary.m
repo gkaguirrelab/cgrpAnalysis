@@ -44,6 +44,12 @@ switch whichDirection
         whichReceptorsToIgnore = {'rodentRod','rodentML'};
         desiredContrast = [1];
         matchConstraint = 1;
+    case 'SplusMelSilentHumanL'
+        whichReceptorsToTarget = {'rodentS','rodentMel'};
+        whichReceptorsToSilence = {'humanL'};
+        whichReceptorsToIgnore = {'rodentRod','rodentML'};
+        desiredContrast = [1.0 0.5];
+        matchConstraint = 8;
     otherwise
         error('Not a defined modulation')
 end

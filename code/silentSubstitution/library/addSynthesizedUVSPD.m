@@ -1,4 +1,4 @@
-function [newS,newB_primary,newAmbientSPD] = addSynthesizedUVSPD(cal)
+function [newS,newB_primary,newAmbientSPD] = addSynthesizedUVSPD(cal,includeDiffuserFlag)
 
 % We are not able to directly measure the SPD of the 365 nm LED. Instead,
 % we digitized the SPD from the spec sheet "LED 365 nm Spectral Plot.pdf"
@@ -86,22 +86,28 @@ B_365LED = spd / max(spd);
 % Scale the 365 LED by the scaleFactor for power
 B_365LED = B_365LED * max(B_primary(:,bluePrimaryIdx)) * scaleFactor;
 
-% Create a transmittance spectrum for the SUVT acrylic. The light from the
-% UV LED passes through this.
-suvtFileName = fullfile(tbLocateProjectSilent('cgrpAnalysis'),'data','SUVT_Acryilic_transmittance.csv');
-suvtTable = readtable(suvtFileName);
+% Optionally apply the effects of a diffusing panel that is between the UV
+% LED and the observer
+if includeDiffuserFlag
 
-minWl = floor(min(suvtTable{:,1})/2)*2;
-maxWl = ceil(max(suvtTable{:,1})/2)*2;
+    % Load a file that contains the specifications of the transmittance
+    % spectrum of the diffuser material
+    suvtFileName = fullfile(tbLocateProjectSilent('cgrpAnalysis'),'data','SUVT_Acryilic_transmittance.csv');
+    suvtTable = readtable(suvtFileName);
 
-transmitPortion = spline(suvtTable{:,1},suvtTable{:,2},minWl:2:maxWl);
-transmittance = zeros(size(newWavelengthsNm))+max(transmitPortion);
-idx1 = find((minWl:2:maxWl)==newWavelengthsNm(1));
-[~,idx2] = min(abs(newWavelengthsNm-maxWl));
-transmittance(1:idx2) = transmitPortion(idx1:end);
+    % Create a transmittance vector from this information
+    minWl = floor(min(suvtTable{:,1})/2)*2;
+    maxWl = ceil(max(suvtTable{:,1})/2)*2;
+    transmitPortion = spline(suvtTable{:,1},suvtTable{:,2},minWl:2:maxWl);
+    transmittance = zeros(size(newWavelengthsNm))+max(transmitPortion);
+    idx1 = find((minWl:2:maxWl)==newWavelengthsNm(1));
+    [~,idx2] = min(abs(newWavelengthsNm-maxWl));
+    transmittance(1:idx2) = transmitPortion(idx1:end);
 
-% Apply the diffusion filter
-B_365LED = B_365LED.*(transmittance/100);
+    % Apply the transmittance of the diffuser
+    B_365LED = B_365LED.*(transmittance/100);
+
+end
 
 % Now expand the original B_primary matrix to the newS range
 newB_primary = zeros(length(newWavelengthsNm),nPrimaries);
