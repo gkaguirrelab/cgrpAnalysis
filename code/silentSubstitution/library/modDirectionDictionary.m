@@ -14,37 +14,31 @@ searchBackground = false;
 xyBound = 0.1;
 
 switch whichDirection
-    case 'LplusS'
-        whichReceptorsToTarget = {'rodentS','rodentML'};
-        whichReceptorsToSilence = {'rodentMel'};
-        whichReceptorsToIgnore = {'rodentRod'};
-        desiredContrast = [1 1];
-        matchConstraint = 3;
-    case 'mel'
-        whichReceptorsToTarget = {'rodentMel'};
-        whichReceptorsToSilence = {'rodentS','rodentML'};
-        whichReceptorsToIgnore = {'rodentRod'};
-        desiredContrast = [1];
+    case 'LightFlux'
+        whichReceptorsToTarget = {'rodentS','rodentMel','humanL'};
+        whichReceptorsToSilence = {};
+        whichReceptorsToIgnore = {'rodentRod','rodentML'};
+        desiredContrast = [1 1 1];
         matchConstraint = 1;
-    case 'SsilentHumanL'
+    case 'S'
         whichReceptorsToTarget = {'rodentS'};
         whichReceptorsToSilence = {'rodentMel','humanL'};
         whichReceptorsToIgnore = {'rodentRod','rodentML'};
         desiredContrast = [1];
-        matchConstraint = 5;
-    case 'SplusHumanL'
-        whichReceptorsToTarget = {'rodentS','humanL'};
-        whichReceptorsToSilence = {'rodentMel'};
+        matchConstraint = 1;
+    case 'L'
+        whichReceptorsToTarget = {'humanL'};
+        whichReceptorsToSilence = {'rodentMel','rodentS',};
         whichReceptorsToIgnore = {'rodentRod','rodentML'};
-        desiredContrast = [1 1];
-        matchConstraint = 5;
-    case 'melSilentHumanL'
+        desiredContrast = [1];
+        matchConstraint = 1;
+    case 'mel'
         whichReceptorsToTarget = {'rodentMel'};
         whichReceptorsToSilence = {'rodentS','humanL'};
         whichReceptorsToIgnore = {'rodentRod','rodentML'};
         desiredContrast = [1];
         matchConstraint = 1;
-    case 'SplusMelSilentHumanL'
+    case 'SplusMel'
         whichReceptorsToTarget = {'rodentS','rodentMel'};
         whichReceptorsToSilence = {'humanL'};
         whichReceptorsToIgnore = {'rodentRod','rodentML'};
