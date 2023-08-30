@@ -38,6 +38,12 @@ switch whichDirection
         whichReceptorsToIgnore = {'rodentRod','rodentML'};
         desiredContrast = [1];
         matchConstraint = 1;
+    case 'LplusS'
+        whichReceptorsToTarget = {'rodentS','humanL'};
+        whichReceptorsToSilence = {'rodentMel'};
+        whichReceptorsToIgnore = {'rodentRod','rodentML'};
+        desiredContrast = [1.0 1.0];
+        matchConstraint = 8;
     case 'SplusMel'
         whichReceptorsToTarget = {'rodentS','rodentMel'};
         whichReceptorsToSilence = {'humanL'};
